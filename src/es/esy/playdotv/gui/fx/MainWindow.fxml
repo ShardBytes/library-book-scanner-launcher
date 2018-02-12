@@ -8,8 +8,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-
-<AnchorPane prefHeight="338.0" prefWidth="512.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8">
+<AnchorPane prefHeight="338.0" prefWidth="512.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="es.esy.playdotv.gui.fx.LauncherGUIController">
    <children>
       <JFXTabPane prefHeight="338.0" prefWidth="512.0" style="-fx-background-color: #6f7075;">
          <tabs>
@@ -18,7 +17,7 @@
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
                         <JFXListView fx:id="prefList" layoutX="25.0" layoutY="14.0" prefHeight="243.0" prefWidth="464.0" style="-fx-background-color: #898a8e;" />
-                        <JFXButton fx:id="runPref" defaultButton="true" layoutX="225.0" layoutY="267.0" style="-fx-background-color: #898a8e;" text="Spustiť" />
+                        <JFXButton fx:id="runPref" defaultButton="true" layoutX="225.0" layoutY="267.0" onAction="#launchLBS" style="-fx-background-color: #898a8e;" text="Spustiť" />
                      </children>
                   </AnchorPane>
               </content>
@@ -37,7 +36,7 @@
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <JFXButton fx:id="updateButton" layoutX="14.0" layoutY="267.0" style="-fx-background-color: #898a8e;" text="Aktualizovať" />
+                        <JFXButton fx:id="updateButton" layoutX="14.0" layoutY="267.0" onAction="#doUpdate" style="-fx-background-color: #898a8e;" text="Aktualizovať" />
                         <Text layoutX="14.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Posledná verzia:" textAlignment="RIGHT" wrappingWidth="150.0" />
                         <Text layoutX="14.0" layoutY="53.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Nainštalovaná verzia:" textAlignment="RIGHT" wrappingWidth="150.0" />
                         <Text fx:id="lastVersionText" layoutX="179.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="lastVersionText" wrappingWidth="252.60205078125" />

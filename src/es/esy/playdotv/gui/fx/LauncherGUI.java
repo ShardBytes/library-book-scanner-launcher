@@ -2,16 +2,17 @@ package es.esy.playdotv.gui.fx;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 public class LauncherGUI extends Application{
 	
 	public FXMLLoader loader;
-	public AnchorPane root;
+	public Parent root;
 	public Scene scene;
 	public Stage stage;
+	public LauncherGUIController controller;
 
 	@Override
 	public void start(Stage primaryStage) throws Exception{
