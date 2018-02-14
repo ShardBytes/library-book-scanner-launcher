@@ -7,7 +7,10 @@ import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import javax.swing.JOptionPane;
+
 import es.esy.playdotv.gui.terminal.TermUtils;
+import es.esy.playdotv.update.AutoUpdate;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -54,6 +57,33 @@ public class LauncherGUI extends Application{
 			TermUtils.printerr("Cannot connect to Github.com! Exiting now");
 			System.exit(-1);
 		}
+		
+		Runnable runnableUpdate = () -> {
+			AutoUpdate.updateData();
+			if(AutoUpdate.updateAvailable()){
+				int selection = JOptionPane.showConfirmDialog(null, "Dostupn\u00E1 aktualiz\u00E1cia, stiahnu\u0165 a nain\u0161talova\u0165?", "Aktualiz\u00E1cia", JOptionPane.YES_NO_OPTION);
+				if(selection == JOptionPane.YES_OPTION && !LauncherGUIController.isLBSRunning){
+					try{
+						AutoUpdate.update();
+					}catch(IOException e){
+						e.printStackTrace();
+					}
+				}else if(selection == JOptionPane.YES_OPTION && LauncherGUIController.isLBSRunning){
+					JOptionPane.showMessageDialog(null, "Ukon\u010Dite LBS a sk\u00FAste znova.", "Chyba", JOptionPane.ERROR_MESSAGE);
+				}
+				
+			}
+			try{
+				Thread.sleep(1800000);
+			}catch(InterruptedException e){
+				TermUtils.printerr("InterruptedException");
+			}
+			
+		};
+		Thread t = new Thread(runnableUpdate);
+		t.setDaemon(true);
+		t.setName("GitUpdate-Thread");
+		t.start();
 		
 		LauncherGUI.launch(args);
 
