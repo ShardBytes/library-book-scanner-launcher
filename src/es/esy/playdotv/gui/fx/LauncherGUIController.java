@@ -2,6 +2,7 @@ package es.esy.playdotv.gui.fx;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.ProcessBuilder.Redirect;
 
 import com.jfoenix.controls.JFXButton;
 
@@ -22,9 +23,12 @@ public class LauncherGUIController{
 		    jvm_location = System.getProperties().getProperty("java.home") + File.separator + "bin" + File.separator + "java";
 		}
 		
-		try {
-			Runtime.getRuntime().exec(jvm_location + " -jar " + "resources/lbs.jar");
-		} catch (IOException e1) {
+		ProcessBuilder pb = new ProcessBuilder(jvm_location, "-splash:resources/splash.png", "-jar", "resources/lbs.jar");
+		pb.redirectOutput(Redirect.INHERIT);
+		pb.redirectError(Redirect.PIPE);
+		try{
+			pb.start();
+		}catch(IOException e1){
 			e1.printStackTrace();
 		}
 		
