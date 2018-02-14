@@ -7,16 +7,17 @@ import java.lang.ProcessBuilder.Redirect;
 import com.jfoenix.controls.JFXButton;
 
 import es.esy.playdotv.gui.terminal.TermUtils;
+import es.esy.playdotv.update.AutoUpdate;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.text.Text;
 
 public class LauncherGUIController{
 	
-	@FXML private JFXButton runPref;
-	@FXML private JFXButton updateButton;
-	@FXML private Text installedVersionText;
-	@FXML private Text lastVersionText;
+	@FXML private static JFXButton runPref;
+	@FXML private static JFXButton updateButton;
+	@FXML private static Text installedVersionText;
+	@FXML private static Text lastVersionText;
 	
 	public static boolean isLBSRunning = false;
 	
@@ -56,7 +57,11 @@ public class LauncherGUIController{
 	
 	@FXML
 	private void doUpdate(ActionEvent e){
-		
+		/*
+		 * TODO: ???????????
+		 */
+		installedVersionText.setText(AutoUpdate.CURRENT_VERSION);
+		lastVersionText.setText(AutoUpdate.LATEST_VERSION);
 	}
 	
 }

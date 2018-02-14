@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="338.0" prefWidth="512.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="es.esy.playdotv.gui.fx.LauncherGUIController">
+<AnchorPane prefHeight="338.0" prefWidth="512.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <JFXTabPane prefHeight="338.0" prefWidth="512.0" style="-fx-background-color: #6f7075;">
          <tabs>
