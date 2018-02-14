@@ -1,2 +1,4 @@
 /bin/
+/resources/
+*.xml
 .DS_Store
