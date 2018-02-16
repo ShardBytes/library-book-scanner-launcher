@@ -46,6 +46,7 @@ public class LauncherGUI extends Application{
 		TermUtils.init();
 		try{
 			TermUtils.println("Connecting to github...");
+			AutoUpdate.updateData();
 			URL url = new URL("https://raw.githubusercontent.com/ShardBytes/library-book-scanner-launcher/master/splash.png");
 			
 			TermUtils.println("Downloading resources...");
@@ -66,7 +67,7 @@ public class LauncherGUI extends Application{
 			while(1 < 2){
 				AutoUpdate.updateData();
 				if(AutoUpdate.updateAvailable()){
-					int selection = JOptionPane.showConfirmDialog(null, "Dostupn\u00E1 aktualiz\u00E1cia, stiahnu\u0165 a nain\u0161talova\u0165?", "Aktualiz\u00E1cia", JOptionPane.YES_NO_OPTION);
+					int selection = JOptionPane.showConfirmDialog(null, "Je dostupn\u00E1 nov\u0161ia verzia, stiahnu\u0165 a nain\u0161talova\u0165?", "Aktualiz\u00E1cia", JOptionPane.YES_NO_OPTION);
 					if(selection == JOptionPane.YES_OPTION && !LauncherGUIController.isLBSRunning){
 						try{
 							AutoUpdate.update();

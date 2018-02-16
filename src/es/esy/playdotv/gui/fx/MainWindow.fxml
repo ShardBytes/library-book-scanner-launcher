@@ -37,10 +37,14 @@
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
                         <JFXButton fx:id="updateButton" layoutX="14.0" layoutY="267.0" onAction="#doUpdate" style="-fx-background-color: #898a8e;" text="Aktualizovať" />
-                        <Text layoutX="14.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Posledná verzia:" textAlignment="RIGHT" wrappingWidth="150.0" />
-                        <Text layoutX="14.0" layoutY="53.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Nainštalovaná verzia:" textAlignment="RIGHT" wrappingWidth="150.0" />
+                        <Text layoutX="14.0" layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Posledná verzia:" textAlignment="RIGHT" wrappingWidth="150.0" />
+                        <Text layoutX="14.0" layoutY="52.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Nainštalovaná verzia:" textAlignment="RIGHT" wrappingWidth="150.0" />
                         <Text fx:id="lastVersionText" layoutX="179.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="lastVersionText" wrappingWidth="252.60205078125" />
                         <Text fx:id="installedVersionText" layoutX="179.0" layoutY="53.0" strokeType="OUTSIDE" strokeWidth="0.0" text="installedVersionText" wrappingWidth="287.07421875" />
+                        <JFXTextField fx:id="username" labelFloat="true" layoutX="179.0" layoutY="73.0" promptText="Meno" />
+                        <Text layoutX="14.0" layoutY="91.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Prihlasovacie údaje:" textAlignment="RIGHT" wrappingWidth="150.0" />
+                        <JFXButton fx:id="saveButton" layoutX="122.0" layoutY="267.0" onAction="#saveSettings" style="-fx-background-color: #898a8e;" text="Uložiť údaje" />
+                        <JFXPasswordField fx:id="password" labelFloat="true" layoutX="179.0" layoutY="122.0" promptText="Heslo" />
                      </children>
                   </AnchorPane>
               </content>
