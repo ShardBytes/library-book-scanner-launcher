@@ -23,12 +23,12 @@ public class LauncherGUI extends Application{
 	public static Parent root;
 	public static Scene scene;
 	public static Stage stage;
-	public static LauncherGUIController controllerInstance = new LauncherGUIController();
+	public static LauncherGUIController controllerInstance;
 
 	@Override
 	public void start(Stage primaryStage) throws Exception{
 		loader = new FXMLLoader(getClass().getResource("MainWindow.fxml"));
-		loader.setController(controllerInstance);
+		controllerInstance = loader.getController();
 		root = loader.load();
 		scene = new Scene(root);
 		
