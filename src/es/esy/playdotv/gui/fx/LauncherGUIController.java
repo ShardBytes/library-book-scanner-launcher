@@ -15,7 +15,6 @@ import es.esy.playdotv.update.AutoUpdate;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.effect.GaussianBlur;
 import javafx.scene.text.Text;
 
 public class LauncherGUIController implements Initializable{
