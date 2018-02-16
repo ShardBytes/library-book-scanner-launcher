@@ -3,22 +3,26 @@ package es.esy.playdotv.gui.fx;
 import java.io.File;
 import java.io.IOException;
 import java.lang.ProcessBuilder.Redirect;
+import java.net.URL;
+import java.util.ResourceBundle;
 
 import com.jfoenix.controls.JFXButton;
 
 import es.esy.playdotv.gui.terminal.TermUtils;
 import es.esy.playdotv.update.AutoUpdate;
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.text.Text;
 
-public class LauncherGUIController{
+public class LauncherGUIController implements Initializable{
 	
 	@FXML private JFXButton runPref;
 	@FXML private JFXButton updateButton;
 	@FXML private Text installedVersionText;
 	@FXML private Text lastVersionText;
+	
+	private LauncherGUI app;
 	
 	public static boolean isLBSRunning = false;
 	
@@ -58,9 +62,17 @@ public class LauncherGUIController{
 	
 	@FXML
 	private void doUpdate(ActionEvent e){
-		Platform.runLater(() -> {
-			LauncherGUI.controllerInstance.installedVersionText.setText(AutoUpdate.CURRENT_VERSION);
-		});
+		installedVersionText.setText(AutoUpdate.CURRENT_VERSION);
+		
+	}
+	
+	public void link(LauncherGUI l){
+		app = l;
+		
+	}
+
+	@Override
+	public void initialize(URL location, ResourceBundle resources){
 		
 	}
 	

@@ -19,17 +19,19 @@ import javafx.stage.Stage;
 
 public class LauncherGUI extends Application{
 	
-	public static FXMLLoader loader;
-	public static Parent root;
-	public static Scene scene;
-	public static Stage stage;
-	public static LauncherGUIController controllerInstance;
+	public FXMLLoader loader;
+	public Parent root;
+	public Scene scene;
+	public Stage stage;
+	public LauncherGUIController controllerInstance;
 
 	@Override
 	public void start(Stage primaryStage) throws Exception{
 		loader = new FXMLLoader(getClass().getResource("MainWindow.fxml"));
-		controllerInstance = loader.getController();
 		root = loader.load();
+		controllerInstance = loader.getController();
+		controllerInstance.link(this);
+		
 		scene = new Scene(root);
 		
 		primaryStage.setTitle("Library Book Scanner - Launcher");
