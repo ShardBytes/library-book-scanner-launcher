@@ -20,8 +20,8 @@ public final class AutoUpdate{
 		updateData();
 	}
 	
-	public static final String CURRENT_VERSION = "v1.0.0";
-	public static final String LATEST_VERSION = GithubData.getRelease_version();
+	public static String CURRENT_VERSION = "v1.0.0";
+	public static String LATEST_VERSION = GithubData.getRelease_version();
 	
 	private static String getGithubJSON(){
 		URL url;
@@ -43,6 +43,8 @@ public final class AutoUpdate{
 
 		}catch(IOException e){
 			System.err.println("Cannot download newest Github data.");
+			System.err.println("API limit probably exceeded, try again 1 hour later.");
+			System.exit(-1);
 		}
 		return resultString.toString();
 
@@ -138,6 +140,7 @@ public final class AutoUpdate{
 		}
 	}
 	
+	@Deprecated
 	public static void update() throws IOException{
 		URL website = new URL(GithubData.getRelease_url());
 		Path out = Paths.get(getJarName() + "_u");

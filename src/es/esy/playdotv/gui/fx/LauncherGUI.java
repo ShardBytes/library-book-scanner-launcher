@@ -1,13 +1,12 @@
 package es.esy.playdotv.gui.fx;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-
-import javax.swing.JOptionPane;
 
 import es.esy.playdotv.gui.terminal.TermUtils;
 import es.esy.playdotv.update.AutoUpdate;
@@ -32,12 +31,12 @@ public class LauncherGUI extends Application{
 		controllerInstance = loader.getController();
 		controllerInstance.link(this);
 		
-		scene = new Scene(root);
+		scene = new Scene(root);		
 		
-		primaryStage.setTitle("Library Book Scanner - Launcher");
 		primaryStage.setScene(scene);
-		primaryStage.setResizable(false);
 		primaryStage.sizeToScene();
+		primaryStage.setTitle("Library Book Scanner - Launcher");
+		primaryStage.setResizable(false);
 		primaryStage.show();
 
 	}
@@ -45,14 +44,15 @@ public class LauncherGUI extends Application{
 	public static void main(String[] args){
 		TermUtils.init();
 		try{
-			TermUtils.println("Connecting to github...");
-			AutoUpdate.updateData();
-			URL url = new URL("https://raw.githubusercontent.com/ShardBytes/library-book-scanner-launcher/master/splash.png");
-			
-			TermUtils.println("Downloading resources...");
-			InputStream in = url.openStream();
 			Files.createDirectories(Paths.get("resources"));
-			Files.copy(in, Paths.get("resources/splash.png"));
+			File splash = new File("resources/splash.png");
+			AutoUpdate.updateData();
+			if(!splash.exists() || splash.isDirectory()){
+				URL url = new URL("https://raw.githubusercontent.com/ShardBytes/library-book-scanner-launcher/master/splash.png");
+				TermUtils.println("Downloading resources...");
+				InputStream in = url.openStream();
+				Files.copy(in, Paths.get("resources/splash.png"));
+			}
 			
 		}catch(FileAlreadyExistsException e){
 			//Do nothing
@@ -62,36 +62,6 @@ public class LauncherGUI extends Application{
 		}finally{
 			TermUtils.println("Resources ready, launching");
 		}
-		
-		Runnable runnableUpdate = () -> {
-			while(1 < 2){
-				AutoUpdate.updateData();
-				if(AutoUpdate.updateAvailable()){
-					int selection = JOptionPane.showConfirmDialog(null, "Je dostupn\u00E1 nov\u0161ia verzia, stiahnu\u0165 a nain\u0161talova\u0165?", "Aktualiz\u00E1cia", JOptionPane.YES_NO_OPTION);
-					if(selection == JOptionPane.YES_OPTION && !LauncherGUIController.isLBSRunning){
-						try{
-							AutoUpdate.update();
-						}catch(IOException e){
-							e.printStackTrace();
-						}
-					}else if(selection == JOptionPane.YES_OPTION && LauncherGUIController.isLBSRunning){
-						JOptionPane.showMessageDialog(null, "Ukon\u010Dite LBS a sk\u00FAste znova.", "Chyba", JOptionPane.ERROR_MESSAGE);
-					}
-					
-				}
-				try{
-					Thread.sleep(1800000);
-				}catch(InterruptedException e){
-					TermUtils.printerr("InterruptedException");
-				}
-				
-			}
-			
-		};
-		Thread t = new Thread(runnableUpdate);
-		t.setDaemon(true);
-		t.setName("GitUpdate-Thread");
-		t.start();
 		
 		LauncherGUI.launch(args);
 
