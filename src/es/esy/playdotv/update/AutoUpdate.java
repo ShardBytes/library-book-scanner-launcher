@@ -10,7 +10,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.Arrays;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -21,8 +20,8 @@ public final class AutoUpdate{
 		updateData();
 	}
 	
-	public static final String CURRENT_VERSION = "v1.0.0";
-	public static final String LATEST_VERSION = GithubData.getRelease_version();
+	public static String CURRENT_VERSION = "v1.0.0";
+	public static String LATEST_VERSION = GithubData.getRelease_version();
 	
 	private static String getGithubJSON(){
 		URL url;
@@ -44,6 +43,8 @@ public final class AutoUpdate{
 
 		}catch(IOException e){
 			System.err.println("Cannot download newest Github data.");
+			System.err.println("API limit probably exceeded, try again 1 hour later.");
+			System.exit(-1);
 		}
 		return resultString.toString();
 
@@ -84,45 +85,62 @@ public final class AutoUpdate{
 	}
 	
 	public static boolean updateAvailable(){
-		String versionNoV = CURRENT_VERSION.substring(1);
-		String versionLatestNoV = LATEST_VERSION.substring(1);
+		if(versionComparator(LATEST_VERSION, CURRENT_VERSION) == 1){
+			return true;
+		}
+		return false;
+		
+	}
+	
+	/**
+	 * Compares 2 program version numbers and returns which one is bigger/smaller or if they are the same.
+	 * @param versionA First version number in format "v10.10.10"
+	 * @param versionB Second version number in format "v11.11.11"
+	 * @return -1 when version A has a smaller number than version B, 0 when both versions have the same number, 1 when version A has a bigger number than version B
+	 */
+	public static int versionComparator(String versionA, String versionB){
+		String versionNoV = versionA.substring(1);
+		String versionLatestNoV = versionB.substring(1);
 		String[] version = versionNoV.split("\\.");
 		String[] versionLatest = versionLatestNoV.split("\\.");
 		int[] versionNum = stringArrayToIntArray(version);
 		int[] versionLatestNum = stringArrayToIntArray(versionLatest);
-		System.out.println(Arrays.toString(version));
-		System.out.println(Arrays.toString(versionLatest));
-		System.out.println(Arrays.toString(versionNum));
-		System.out.println(Arrays.toString(versionLatestNum));
-		System.out.println(CURRENT_VERSION);
-		System.out.println(LATEST_VERSION);
-		System.out.println(versionNoV);
-		System.out.println(versionLatestNoV);
+		
+		/*
+		 * System.out.println(Arrays.toString(version));
+		 * System.out.println(Arrays.toString(versionLatest));
+		 * System.out.println(Arrays.toString(versionNum));
+		 * System.out.println(Arrays.toString(versionLatestNum));
+		 * System.out.println(CURRENT_VERSION);
+		 * System.out.println(LATEST_VERSION);
+		 * System.out.println(versionNoV);
+		 * System.out.println(versionLatestNoV); 
+		 */
 		
 		if(versionNum[0] < versionLatestNum[0]){
-			return true;
+			return -1;
 		}else if(versionNum[0] > versionLatestNum[0]){
-			return false;
+			return 1;
 		}else{
 			if(versionNum[1] < versionLatestNum[1]){
-				return true;
+				return -1;
 			}else if(versionNum[1] > versionLatestNum[1]){
-				return false;
+				return 1;
 			}else{
 				if(versionNum[2] < versionLatestNum[2]){
-					return true;
+					return -1;
 				}else if(versionNum[2] > versionLatestNum[2]){
-					return false;
+					return 1;
 				}else{
-					return false;
+					return 0;
 				}
 				
 			}
 			
 		}
-		
 	}
 	
+	@Deprecated
 	public static void update() throws IOException{
 		URL website = new URL(GithubData.getRelease_url());
 		Path out = Paths.get(getJarName() + "_u");
