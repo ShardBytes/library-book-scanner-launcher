@@ -14,6 +14,9 @@ import java.nio.file.StandardCopyOption;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import es.esy.playdotv.gui.terminal.TermUtils;
+import javafx.application.Platform;
+
 public final class AutoUpdate{
 	
 	static{
@@ -42,9 +45,10 @@ public final class AutoUpdate{
 			reader.close();
 
 		}catch(IOException e){
-			System.err.println("Cannot download newest Github data.");
-			System.err.println("API limit probably exceeded, try again 1 hour later.");
-			System.exit(-1);
+			e.printStackTrace();
+			TermUtils.printerr("Cannot download newest Github data.");
+			TermUtils.printerr("API limit probably exceeded, try again 1 hour later.");
+			Platform.exit();
 		}
 		return resultString.toString();
 
@@ -99,24 +103,31 @@ public final class AutoUpdate{
 	 * @return -1 when version A has a smaller number than version B, 0 when both versions have the same number, 1 when version A has a bigger number than version B
 	 */
 	public static int versionComparator(String versionA, String versionB){
+		/*
+		 * Remove the "v"
+		 */
 		String versionNoV = versionA.substring(1);
 		String versionLatestNoV = versionB.substring(1);
+		/*
+		 * Split on dot
+		 */
 		String[] version = versionNoV.split("\\.");
 		String[] versionLatest = versionLatestNoV.split("\\.");
-		int[] versionNum = stringArrayToIntArray(version);
-		int[] versionLatestNum = stringArrayToIntArray(versionLatest);
+		/*
+		 * Convert strings to numbers, if the conversion fails, return 1 (as "update needed")
+		 */
+		int[] versionNum = new int[3];
+		int[] versionLatestNum = new int[3];
+		try{
+			versionNum = stringArrayToIntArray(version);
+			versionLatestNum = stringArrayToIntArray(versionLatest);			
+		}catch(Exception e){
+			return 1;
+		}
 		
 		/*
-		 * System.out.println(Arrays.toString(version));
-		 * System.out.println(Arrays.toString(versionLatest));
-		 * System.out.println(Arrays.toString(versionNum));
-		 * System.out.println(Arrays.toString(versionLatestNum));
-		 * System.out.println(CURRENT_VERSION);
-		 * System.out.println(LATEST_VERSION);
-		 * System.out.println(versionNoV);
-		 * System.out.println(versionLatestNoV); 
+		 * Compare and return -1 when update is not needed, 0 when program is up to date and 1 when update is needed.
 		 */
-		
 		if(versionNum[0] < versionLatestNum[0]){
 			return -1;
 		}else if(versionNum[0] > versionLatestNum[0]){
@@ -138,6 +149,7 @@ public final class AutoUpdate{
 			}
 			
 		}
+		
 	}
 	
 	@Deprecated
