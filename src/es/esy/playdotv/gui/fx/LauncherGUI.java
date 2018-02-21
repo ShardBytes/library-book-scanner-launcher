@@ -50,7 +50,7 @@ public class LauncherGUI extends Application{
 	
 	public static void main(String[] args){
 		TermUtils.init();
-		new Thread(() -> {
+		if(System.getProperty("os.name").startsWith("Win")){
 			try{
 				Files.createDirectories(Paths.get("resources"));
 				File splash = new File("resources" + File.separator + "splash.png");
@@ -69,7 +69,28 @@ public class LauncherGUI extends Application{
 			}finally{
 				TermUtils.println("Resources ready, launching");
 			}
-		}).start();
+		}else{
+			new Thread(() -> {
+				try{
+					Files.createDirectories(Paths.get("resources"));
+					File splash = new File("resources" + File.separator + "splash.png");
+					if(!splash.exists() || splash.isDirectory()){
+						URL url = new URL("https://raw.githubusercontent.com/ShardBytes/library-book-scanner-launcher/master/splash.png");
+						TermUtils.println("Downloading resources...");
+						InputStream in = url.openStream();
+						Files.copy(in, Paths.get("resources" + File.separator + "splash.png"));
+					}
+					
+				}catch(FileAlreadyExistsException e){
+					//Do nothing
+				}catch(IOException e1){
+					TermUtils.printerr("Cannot connect to Github.com! Exiting now");
+					Platform.exit();
+				}finally{
+					TermUtils.println("Resources ready, launching");
+				}
+			}).start();
+		}
 		
 		LauncherGUI.launch(args);
 

@@ -90,6 +90,8 @@ public class LauncherGUIController implements Initializable{
 				e1.printStackTrace();
 			}
 			
+		}else{
+			new Thread(() -> JOptionPane.showMessageDialog(null, "Chyba pri sp\u00FA\u0161\u0165an\u00ED LBS.", "Chyba", JOptionPane.ERROR_MESSAGE)).start();
 		}
 		
 	}
