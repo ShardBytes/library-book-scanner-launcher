@@ -2,8 +2,3 @@
 /resources/
 *.xml
 *.DS_Store
-
-bin/
-out/
-.idea/
-*.iml
