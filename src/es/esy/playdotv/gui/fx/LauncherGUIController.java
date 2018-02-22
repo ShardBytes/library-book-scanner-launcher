@@ -183,6 +183,7 @@ public class LauncherGUIController implements Initializable{
 	private void saveSettings(ActionEvent e){
 		/*
 		 * TODO: Také pekné okno čo vyskočí vnútri a pozadie bude rozmazané; pridávanie používateľov maybe?
+		 * METHODS: Ej ta ty si zlaty xDDDD
 		 */
 	}
 	
