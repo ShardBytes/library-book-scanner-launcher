@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+
+<AnchorPane prefHeight="200.0" prefWidth="293.0" style="-fx-background-color: #6f7075;" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="es.esy.playdotv.gui.fx.UpdatePopupController">
+   <children>
+      <ProgressBar fx:id="pgb1" layoutX="47.0" layoutY="139.0" prefWidth="200.0" progress="0.0" />
+      <ProgressIndicator fx:id="pgi1" layoutX="130.0" layoutY="77.0" progress="0.0" />
+   </children>
+</AnchorPane>

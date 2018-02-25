@@ -1,4 +1,4 @@
-package es.esy.playdotv.gui.fx;
+package io.github.shardbytes.lbslauncher.gui.fx.copy;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,7 +8,7 @@ import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import es.esy.playdotv.gui.terminal.TermUtils;
+import io.github.shardbytes.lbslauncher.gui.terminal.TermUtils;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;

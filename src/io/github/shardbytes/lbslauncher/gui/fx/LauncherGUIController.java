@@ -1,4 +1,4 @@
-package es.esy.playdotv.gui.fx;
+package io.github.shardbytes.lbslauncher.gui.fx;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,8 +18,8 @@ import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 
-import es.esy.playdotv.gui.terminal.TermUtils;
-import es.esy.playdotv.update.AutoUpdate;
+import io.github.shardbytes.lbslauncher.gui.terminal.TermUtils;
+import io.github.shardbytes.lbslauncher.update.AutoUpdate;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;

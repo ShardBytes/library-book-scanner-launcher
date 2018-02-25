@@ -1,4 +1,4 @@
-package es.esy.playdotv.gui.terminal;
+package io.github.shardbytes.lbslauncher.gui.terminal;
 
 import com.diogonunes.jcdp.color.ColoredPrinter;
 import com.diogonunes.jcdp.color.api.Ansi.Attribute;
