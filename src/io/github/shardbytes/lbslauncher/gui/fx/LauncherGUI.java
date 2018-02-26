@@ -35,7 +35,7 @@ public class LauncherGUI extends Application{
 		
 		primaryStage.setScene(scene);
 		primaryStage.sizeToScene();
-		primaryStage.setTitle("Library Book Scanner - Launcher");
+		primaryStage.setTitle("Library Book Scanner Launcher");
 		primaryStage.setResizable(false);
 		primaryStage.show();
 
@@ -44,7 +44,13 @@ public class LauncherGUI extends Application{
 	@Override
 	public void stop() throws Exception{
 		super.stop();
-		LauncherGUIController.p.destroy();
+		try{
+			LauncherGUIController.p.destroy();			
+		}catch(Exception e){
+			TermUtils.println("Cannot stop process: maybe LBS is not running?");
+		}finally{			
+			TermUtils.println("Exiting");
+		}
 		
 	}
 	
