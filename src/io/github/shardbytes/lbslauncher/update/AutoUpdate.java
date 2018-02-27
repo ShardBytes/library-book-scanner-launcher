@@ -1,4 +1,4 @@
-package es.esy.playdotv.update;
+package io.github.shardbytes.lbslauncher.update;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,7 +14,7 @@ import java.nio.file.StandardCopyOption;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import es.esy.playdotv.gui.terminal.TermUtils;
+import io.github.shardbytes.lbslauncher.gui.terminal.TermUtils;
 import javafx.application.Platform;
 
 public final class AutoUpdate{

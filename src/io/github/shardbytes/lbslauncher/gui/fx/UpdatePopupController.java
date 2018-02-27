@@ -1,4 +1,4 @@
-package es.esy.playdotv.gui.fx;
+package io.github.shardbytes.lbslauncher.gui.fx;
 
 import java.net.URL;
 import java.util.ResourceBundle;

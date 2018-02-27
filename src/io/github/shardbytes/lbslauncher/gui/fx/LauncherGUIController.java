@@ -1,4 +1,4 @@
-package es.esy.playdotv.gui.fx;
+package io.github.shardbytes.lbslauncher.gui.fx;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,8 +18,8 @@ import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 
-import es.esy.playdotv.gui.terminal.TermUtils;
-import es.esy.playdotv.update.AutoUpdate;
+import io.github.shardbytes.lbslauncher.gui.terminal.TermUtils;
+import io.github.shardbytes.lbslauncher.update.AutoUpdate;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
@@ -60,7 +60,10 @@ public class LauncherGUIController implements Initializable{
 		int selection = prefList.getSelectionModel().getSelectedIndex();
 		String jvm_location;
 		
-		if(new File("resources" + File.separator + "splash.png").exists()){
+		if(new File("resources" + File.separator + "splash.png").exists()
+				&& new File("resources" + File.separator + "zoznam.xls").exists()
+				&& new File("resources" + File.separator + "books.xls").exists()
+				&& new File("resources" + File.separator + "persons.xls").exists()){
 			if(System.getProperty("os.name").startsWith("Win")){
 			    jvm_location = System.getProperties().getProperty("java.home") + File.separator + "bin" + File.separator + "java.exe";
 			}else{
@@ -91,7 +94,7 @@ public class LauncherGUIController implements Initializable{
 			}
 			
 		}else{
-			new Thread(() -> JOptionPane.showMessageDialog(null, "Chyba pri sp\u00FA\u0161\u0165an\u00ED LBS.", "Chyba", JOptionPane.ERROR_MESSAGE)).start();
+			new Thread(() -> JOptionPane.showMessageDialog(null, "Chyba pri sp\u00FA\u0161\u0165an\u00ED LBS. Skontrolujte pripojenie k internetu a spustite launcher znova.", "Chyba", JOptionPane.ERROR_MESSAGE)).start();
 		}
 		
 	}
