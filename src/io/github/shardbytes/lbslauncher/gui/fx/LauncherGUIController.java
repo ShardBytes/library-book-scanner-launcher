@@ -60,7 +60,10 @@ public class LauncherGUIController implements Initializable{
 		int selection = prefList.getSelectionModel().getSelectedIndex();
 		String jvm_location;
 		
-		if(new File("resources" + File.separator + "splash.png").exists()){
+		if(new File("resources" + File.separator + "splash.png").exists()
+				&& new File("resources" + File.separator + "zoznam.xls").exists()
+				&& new File("resources" + File.separator + "books.xls").exists()
+				&& new File("resources" + File.separator + "persons.xls").exists()){
 			if(System.getProperty("os.name").startsWith("Win")){
 			    jvm_location = System.getProperties().getProperty("java.home") + File.separator + "bin" + File.separator + "java.exe";
 			}else{
@@ -91,7 +94,7 @@ public class LauncherGUIController implements Initializable{
 			}
 			
 		}else{
-			new Thread(() -> JOptionPane.showMessageDialog(null, "Chyba pri sp\u00FA\u0161\u0165an\u00ED LBS.", "Chyba", JOptionPane.ERROR_MESSAGE)).start();
+			new Thread(() -> JOptionPane.showMessageDialog(null, "Chyba pri sp\u00FA\u0161\u0165an\u00ED LBS. Skontrolujte pripojenie k internetu a spustite launcher znova.", "Chyba", JOptionPane.ERROR_MESSAGE)).start();
 		}
 		
 	}
