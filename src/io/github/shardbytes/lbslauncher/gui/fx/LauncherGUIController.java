@@ -70,7 +70,7 @@ public class LauncherGUIController implements Initializable{
 			    jvm_location = System.getProperties().getProperty("java.home") + File.separator + "bin" + File.separator + "java";
 			}
 			
-			ProcessBuilder pb = new ProcessBuilder(jvm_location, "-splash:resources" + File.separator + "splash.png", "-jar", "resources" + File.separator + prefList.getItems().get((selection == -1 ? 0 : selection)) + ".jar");
+			ProcessBuilder pb = new ProcessBuilder(jvm_location, "-splash:resources" + File.separator + "splash.png", "-jar", "resources" + File.separator + prefList.getItems().get((selection == -1 ? 0 : selection)) + ".jar", LauncherGUI.LBSDatabaseLocation1, LauncherGUI.LBSDatabaseLocation2);
 			pb.redirectOutput(Redirect.INHERIT);
 			pb.redirectError(Redirect.PIPE);
 			
@@ -172,6 +172,8 @@ public class LauncherGUIController implements Initializable{
 					app.root.setEffect(null);
 					prefList.getItems().clear();
 					addFilesToList();
+					refreshCurrentVersion();
+					setCurrentVersionText();
 				});
 			};
 			Thread downloadThread = new Thread(downloadRunnable);
@@ -201,11 +203,8 @@ public class LauncherGUIController implements Initializable{
 		prefList.setCellFactory(TextFieldListCell.forListView());
 		
 		addFilesToList();
-		try{
-			AutoUpdate.CURRENT_VERSION = prefList.getItems().get(0).toString().substring(22, prefList.getItems().get(0).toString().length() - 1);			
-		}catch(IndexOutOfBoundsException e){
-			AutoUpdate.CURRENT_VERSION = "Aktualiz\u00E1cia potrebn\u00E1";
-		}
+		refreshCurrentVersion();
+		
 		Runnable runnableUpdate = () -> {
 			while(1 < 2){
 				if(AutoUpdate.updateAvailable()){
@@ -225,8 +224,7 @@ public class LauncherGUIController implements Initializable{
 		t.setName("GitUpdate-Thread");
 		t.start();
 		
-		installedVersionText.setText(AutoUpdate.CURRENT_VERSION);
-		lastVersionText.setText(AutoUpdate.LATEST_VERSION);
+		setCurrentVersionText();
 
 	}
 		/*
@@ -253,6 +251,21 @@ public class LauncherGUIController implements Initializable{
 			}
 
 		}
+		
+	}
+	
+	private void refreshCurrentVersion(){
+		try{
+			AutoUpdate.CURRENT_VERSION = prefList.getItems().get(0).toString().substring(22, prefList.getItems().get(0).toString().length() - 1);			
+		}catch(IndexOutOfBoundsException e){
+			AutoUpdate.CURRENT_VERSION = "Aktualiz\u00E1cia potrebn\u00E1";
+		}
+		
+	}
+	
+	private void setCurrentVersionText(){
+		installedVersionText.setText(AutoUpdate.CURRENT_VERSION);
+		lastVersionText.setText(AutoUpdate.LATEST_VERSION);
 		
 	}
 	

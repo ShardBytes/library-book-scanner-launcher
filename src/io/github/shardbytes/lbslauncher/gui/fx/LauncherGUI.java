@@ -24,6 +24,14 @@ public class LauncherGUI extends Application{
 	public Scene scene;
 	public Stage stage;
 	public LauncherGUIController controllerInstance;
+	
+	public static String LBSDatabaseLocation1;
+	public static String LBSDatabaseLocation2;
+	
+	public static double x;
+	public static double y;
+	public static double width;
+	public static double height;
 
 	@Override
 	public void start(Stage primaryStage) throws Exception{
@@ -39,6 +47,7 @@ public class LauncherGUI extends Application{
 		primaryStage.setTitle("Library Book Scanner Launcher");
 		primaryStage.setResizable(false);
 		primaryStage.show();
+		stage = primaryStage;
 
 	}
 	
