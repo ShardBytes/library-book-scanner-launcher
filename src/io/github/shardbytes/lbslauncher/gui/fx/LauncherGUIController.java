@@ -9,6 +9,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.ResourceBundle;
 
 import javax.swing.JOptionPane;
@@ -22,12 +26,16 @@ import io.github.shardbytes.lbslauncher.gui.terminal.TermUtils;
 import io.github.shardbytes.lbslauncher.update.AutoUpdate;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Side;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.chart.PieChart;
 import javafx.scene.control.cell.TextFieldListCell;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.effect.GaussianBlur;
@@ -45,6 +53,8 @@ public class LauncherGUIController implements Initializable{
 	@FXML private JFXButton saveButton;
 	@FXML private JFXTextField username;
 	@FXML private JFXPasswordField password;
+	@FXML private PieChart pie1;
+	@FXML private PieChart pie2;
 	
 	@SuppressWarnings("rawtypes")
 	@FXML private JFXListView prefList;
@@ -225,20 +235,40 @@ public class LauncherGUIController implements Initializable{
 		t.start();
 		
 		setCurrentVersionText();
-
-	}
-		/*
+		
 		ObservableList<PieChart.Data> pieData = FXCollections.observableArrayList(new PieChart.Data("Vypozicane", 35), new PieChart.Data("Dostupne", 10));
+		ObservableList<PieChart.Data> pieData2 = FXCollections.observableArrayList(new PieChart.Data("Poezia", 400), new PieChart.Data("Beletria", 1000), new PieChart.Data("Naucna literatura", 750));
 		
 		pie1.setStartAngle(90);
 		pie1.setTitle("Graf 1");
 		pie1.setTitleSide(Side.TOP);
+		pie1.setLegendVisible(true);
+		pie1.setLabelsVisible(true);
+		pie1.setLegendSide(Side.RIGHT);
 		pie1.setData(pieData);
-		*/
+		
+		pie2.setStartAngle(90);
+		pie2.setTitle("Graf 2");
+		pie2.setTitleSide(Side.TOP);
+		pie2.setLegendVisible(true);
+		pie2.setLabelsVisible(true);
+		pie2.setLegendSide(Side.RIGHT);
+		pie2.setData(pieData2);
+
+	}
 	
 	@SuppressWarnings("unchecked")
 	private void addFilesToList(){
 		File[] versions = new File("resources" + File.separator).listFiles();
+		Arrays.sort(versions);
+		
+		int versionsHalfLength = versions.length >> 1;
+		
+		for(int i = 0; i < versionsHalfLength; i++){
+			File tempFile = versions[i];
+			versions[i] = versions[versions.length - i - 1];
+			versions[versions.length - i - 1] = tempFile;
+		}
 		
 		for(File f : versions){
 			if(f.isDirectory()){
@@ -256,7 +286,14 @@ public class LauncherGUIController implements Initializable{
 	
 	private void refreshCurrentVersion(){
 		try{
-			AutoUpdate.CURRENT_VERSION = prefList.getItems().get(0).toString().substring(22, prefList.getItems().get(0).toString().length() - 1);			
+			ArrayList<String> versions = new ArrayList<>();
+			
+			for(Object versionObj : prefList.getItems()){
+				versions.add(versionObj.toString().substring(22, versionObj.toString().length() - 1));
+			}
+			Comparator<String> customComparator = AutoUpdate::versionComparator;
+			
+			AutoUpdate.CURRENT_VERSION = Collections.max(versions, customComparator);
 		}catch(IndexOutOfBoundsException e){
 			AutoUpdate.CURRENT_VERSION = "Aktualiz\u00E1cia potrebn\u00E1";
 		}
