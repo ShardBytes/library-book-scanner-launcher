@@ -1,8 +1,13 @@
 package io.github.shardbytes.lbslauncher.gui.fx;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.ProcessBuilder.Redirect;
 import java.net.URL;
 import java.nio.file.Files;
@@ -10,12 +15,14 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 import javax.swing.JOptionPane;
 
+import org.json.JSONObject;
+
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
-import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 
 import io.github.shardbytes.lbslauncher.gui.terminal.TermUtils;
@@ -43,8 +50,8 @@ public class LauncherGUIController implements Initializable{
 	@FXML private Text installedVersionText;
 	@FXML private Text lastVersionText;
 	@FXML private JFXButton saveButton;
-	@FXML private JFXTextField username;
-	@FXML private JFXPasswordField password;
+	@FXML private JFXTextField db1;
+	@FXML private JFXTextField db2;
 	
 	@SuppressWarnings("rawtypes")
 	@FXML private JFXListView prefList;
@@ -186,10 +193,33 @@ public class LauncherGUIController implements Initializable{
 	
 	@FXML
 	private void saveSettings(ActionEvent e){
-		/*
-		 * TODO: Také pekné okno čo vyskočí vnútri a pozadie bude rozmazané; pridávanie používateľov maybe?
-		 * METHODS: Ej ta ty si zlaty xDDDD
-		 */
+		JSONObject obj = new JSONObject();
+		obj.put("db1", LauncherGUI.LBSDatabaseLocation1);
+		obj.put("db2", LauncherGUI.LBSDatabaseLocation2);
+		
+		try(FileWriter fw = new FileWriter(new File("launcherConfig.json"))){
+			fw.write(obj.toString());
+			fw.flush();
+		} catch (IOException e1) {
+			TermUtils.printerr("Cannot save config file!");
+		}
+		
+	}
+	
+	private void loadSettings(){
+		String data = "";
+		try(FileInputStream fis = new FileInputStream(new File("launcherConfig.json"))){
+			try(BufferedReader buffer = new BufferedReader(new InputStreamReader(fis))){
+				data = buffer.lines().collect(Collectors.joining(System.lineSeparator()));
+			}
+			JSONObject obj = new JSONObject(data);
+			LauncherGUI.LBSDatabaseLocation1 = obj.get("db1").toString();
+			LauncherGUI.LBSDatabaseLocation2 = obj.get("db2").toString();
+			
+		}catch(IOException e1){
+			TermUtils.printerr("Cannot read config file!");
+		}
+		
 	}
 	
 	public void link(LauncherGUI l){
