@@ -14,6 +14,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
@@ -29,12 +33,16 @@ import io.github.shardbytes.lbslauncher.gui.terminal.TermUtils;
 import io.github.shardbytes.lbslauncher.update.AutoUpdate;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Side;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.chart.PieChart;
 import javafx.scene.control.cell.TextFieldListCell;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.effect.GaussianBlur;
@@ -44,7 +52,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 public class LauncherGUIController implements Initializable{
-	
+
 	@FXML private JFXButton runPref;
 	@FXML private JFXButton updateButton;
 	@FXML private Text installedVersionText;
@@ -52,21 +60,23 @@ public class LauncherGUIController implements Initializable{
 	@FXML private JFXButton saveButton;
 	@FXML private JFXTextField db1;
 	@FXML private JFXTextField db2;
-	
+	@FXML private PieChart pie1;
+	@FXML private PieChart pie2;
+
 	@SuppressWarnings("rawtypes")
 	@FXML private JFXListView prefList;
-	
+
 	private LauncherGUI app;
-	
+
 	public static boolean isLBSRunning = false;
 	public static Process p;
 	private volatile boolean completed = false;
-	
+
 	@FXML
 	private void launchLBS(ActionEvent e){
 		int selection = prefList.getSelectionModel().getSelectedIndex();
 		String jvm_location;
-		
+
 		if(new File("resources" + File.separator + "splash.png").exists()
 				&& new File("resources" + File.separator + "zoznam.xls").exists()
 				&& new File("resources" + File.separator + "books.xls").exists()
@@ -76,11 +86,11 @@ public class LauncherGUIController implements Initializable{
 			}else{
 			    jvm_location = System.getProperties().getProperty("java.home") + File.separator + "bin" + File.separator + "java";
 			}
-			
+
 			ProcessBuilder pb = new ProcessBuilder(jvm_location, "-splash:resources" + File.separator + "splash.png", "-jar", "resources" + File.separator + prefList.getItems().get((selection == -1 ? 0 : selection)) + ".jar", LauncherGUI.LBSDatabaseLocation1, LauncherGUI.LBSDatabaseLocation2);
 			pb.redirectOutput(Redirect.INHERIT);
 			pb.redirectError(Redirect.PIPE);
-			
+
 			try{
 				p = pb.start();
 				isLBSRunning = true;
@@ -99,13 +109,13 @@ public class LauncherGUIController implements Initializable{
 			}catch(IOException e1){
 				e1.printStackTrace();
 			}
-			
+
 		}else{
 			new Thread(() -> JOptionPane.showMessageDialog(null, "Chyba pri sp\u00FA\u0161\u0165an\u00ED LBS. Skontrolujte pripojenie k internetu a spustite launcher znova.", "Chyba", JOptionPane.ERROR_MESSAGE)).start();
 		}
-		
+
 	}
-	
+
 	@FXML
 	private void doUpdate(ActionEvent e) throws IOException{
 		if(isLBSRunning){
@@ -135,22 +145,22 @@ public class LauncherGUIController implements Initializable{
 			};
 			ChangeListener<Number> heightListener = (observable, oldValue, newValue) -> {
 				double stageHeight = newValue.doubleValue();
-				dialog.setY(mainWindow.getY() + mainWindow.getHeight() / 2 - stageHeight / 2);   
+				dialog.setY(mainWindow.getY() + mainWindow.getHeight() / 2 - stageHeight / 2);
 			};
 
 			dialog.widthProperty().addListener(widthListener);
 			dialog.heightProperty().addListener(heightListener);
-			
+
 			dialog.setOnShown((x) -> {
 				dialog.widthProperty().removeListener(widthListener);
 				dialog.heightProperty().removeListener(heightListener);
 			});
 
 			dialog.show();
-			
+
 			URL web = new URL(AutoUpdate.GithubData.getAssets_download_url());
 			Path out = Paths.get("resources" + File.separator + AutoUpdate.GithubData.getRelease_name() + ".jar");
-			
+
 			Runnable downloadRunnable = () -> {
 				try(InputStream in = web.openStream()){
 					Files.copy(in, out, StandardCopyOption.REPLACE_EXISTING);
@@ -188,24 +198,24 @@ public class LauncherGUIController implements Initializable{
 			downloadThread.start();
 			checkThread.start();
 		}
-		
+
 	}
-	
+
 	@FXML
 	private void saveSettings(ActionEvent e){
 		JSONObject obj = new JSONObject();
 		obj.put("db1", LauncherGUI.LBSDatabaseLocation1);
 		obj.put("db2", LauncherGUI.LBSDatabaseLocation2);
-		
+
 		try(FileWriter fw = new FileWriter(new File("launcherConfig.json"))){
 			fw.write(obj.toString());
 			fw.flush();
 		} catch (IOException e1) {
 			TermUtils.printerr("Cannot save config file!");
 		}
-		
+
 	}
-	
+
 	private void loadSettings(){
 		String data = "";
 		try(FileInputStream fis = new FileInputStream(new File("launcherConfig.json"))){
@@ -215,13 +225,13 @@ public class LauncherGUIController implements Initializable{
 			JSONObject obj = new JSONObject(data);
 			LauncherGUI.LBSDatabaseLocation1 = obj.get("db1").toString();
 			LauncherGUI.LBSDatabaseLocation2 = obj.get("db2").toString();
-			
+
 		}catch(IOException e1){
 			TermUtils.printerr("Cannot read config file!");
 		}
-		
+
 	}
-	
+
 	public void link(LauncherGUI l){
 		app = l;
 	}
@@ -231,10 +241,10 @@ public class LauncherGUIController implements Initializable{
 	public void initialize(URL location, ResourceBundle resources){
 		prefList.setEditable(false);
 		prefList.setCellFactory(TextFieldListCell.forListView());
-		
+
 		addFilesToList();
 		refreshCurrentVersion();
-		
+
 		Runnable runnableUpdate = () -> {
 			while(1 < 2){
 				if(AutoUpdate.updateAvailable()){
@@ -245,31 +255,51 @@ public class LauncherGUIController implements Initializable{
 				}catch(InterruptedException e){
 					TermUtils.printerr("InterruptedException");
 				}
-				
+
 			}
-			
+
 		};
 		Thread t = new Thread(runnableUpdate);
 		t.setDaemon(true);
 		t.setName("GitUpdate-Thread");
 		t.start();
-		
+
 		setCurrentVersionText();
 
-	}
-		/*
 		ObservableList<PieChart.Data> pieData = FXCollections.observableArrayList(new PieChart.Data("Vypozicane", 35), new PieChart.Data("Dostupne", 10));
-		
+		ObservableList<PieChart.Data> pieData2 = FXCollections.observableArrayList(new PieChart.Data("Poezia", 400), new PieChart.Data("Beletria", 1000), new PieChart.Data("Naucna literatura", 750));
+
 		pie1.setStartAngle(90);
 		pie1.setTitle("Graf 1");
 		pie1.setTitleSide(Side.TOP);
+		pie1.setLegendVisible(true);
+		pie1.setLabelsVisible(true);
+		pie1.setLegendSide(Side.RIGHT);
 		pie1.setData(pieData);
-		*/
-	
+
+		pie2.setStartAngle(90);
+		pie2.setTitle("Graf 2");
+		pie2.setTitleSide(Side.TOP);
+		pie2.setLegendVisible(true);
+		pie2.setLabelsVisible(true);
+		pie2.setLegendSide(Side.RIGHT);
+		pie2.setData(pieData2);
+
+	}
+
 	@SuppressWarnings("unchecked")
 	private void addFilesToList(){
 		File[] versions = new File("resources" + File.separator).listFiles();
-		
+		Arrays.sort(versions);
+
+		int versionsHalfLength = versions.length >> 1;
+
+		for(int i = 0; i < versionsHalfLength; i++){
+			File tempFile = versions[i];
+			versions[i] = versions[versions.length - i - 1];
+			versions[versions.length - i - 1] = tempFile;
+		}
+
 		for(File f : versions){
 			if(f.isDirectory()){
 				continue;
@@ -281,22 +311,29 @@ public class LauncherGUIController implements Initializable{
 			}
 
 		}
-		
+
 	}
-	
+
 	private void refreshCurrentVersion(){
 		try{
-			AutoUpdate.CURRENT_VERSION = prefList.getItems().get(0).toString().substring(22, prefList.getItems().get(0).toString().length() - 1);			
+			ArrayList<String> versions = new ArrayList<>();
+
+			for(Object versionObj : prefList.getItems()){
+				versions.add(versionObj.toString().substring(22, versionObj.toString().length() - 1));
+			}
+			Comparator<String> customComparator = AutoUpdate::versionComparator;
+
+			AutoUpdate.CURRENT_VERSION = Collections.max(versions, customComparator);
 		}catch(IndexOutOfBoundsException e){
 			AutoUpdate.CURRENT_VERSION = "Aktualiz\u00E1cia potrebn\u00E1";
 		}
-		
+
 	}
-	
+
 	private void setCurrentVersionText(){
 		installedVersionText.setText(AutoUpdate.CURRENT_VERSION);
 		lastVersionText.setText(AutoUpdate.LATEST_VERSION);
-		
+
 	}
-	
+
 }
