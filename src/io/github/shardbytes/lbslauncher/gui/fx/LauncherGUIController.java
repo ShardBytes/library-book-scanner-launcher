@@ -3,7 +3,6 @@ package io.github.shardbytes.lbslauncher.gui.fx;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -203,6 +202,9 @@ public class LauncherGUIController implements Initializable{
 
 	@FXML
 	private void saveSettings(ActionEvent e){
+		LauncherGUI.LBSDatabaseLocation1 = db1.getText();
+		LauncherGUI.LBSDatabaseLocation2 = db2.getText();
+		
 		JSONObject obj = new JSONObject();
 		obj.put("db1", LauncherGUI.LBSDatabaseLocation1);
 		obj.put("db2", LauncherGUI.LBSDatabaseLocation2);
@@ -225,6 +227,9 @@ public class LauncherGUIController implements Initializable{
 			JSONObject obj = new JSONObject(data);
 			LauncherGUI.LBSDatabaseLocation1 = obj.get("db1").toString();
 			LauncherGUI.LBSDatabaseLocation2 = obj.get("db2").toString();
+			
+			db1.setText(LauncherGUI.LBSDatabaseLocation1);
+			db2.setText(LauncherGUI.LBSDatabaseLocation2);
 
 		}catch(IOException e1){
 			TermUtils.printerr("Cannot read config file!");
@@ -265,6 +270,7 @@ public class LauncherGUIController implements Initializable{
 		t.start();
 
 		setCurrentVersionText();
+		loadSettings();
 
 		ObservableList<PieChart.Data> pieData = FXCollections.observableArrayList(new PieChart.Data("Vypozicane", 35), new PieChart.Data("Dostupne", 10));
 		ObservableList<PieChart.Data> pieData2 = FXCollections.observableArrayList(new PieChart.Data("Poezia", 400), new PieChart.Data("Beletria", 1000), new PieChart.Data("Naucna literatura", 750));
