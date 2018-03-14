@@ -24,6 +24,14 @@ public class LauncherGUI extends Application{
 	public Scene scene;
 	public Stage stage;
 	public LauncherGUIController controllerInstance;
+	
+	public static String LBSDatabaseLocation1;
+	public static String LBSDatabaseLocation2;
+	
+	public static double x;
+	public static double y;
+	public static double width;
+	public static double height;
 
 	@Override
 	public void start(Stage primaryStage) throws Exception{
@@ -39,6 +47,7 @@ public class LauncherGUI extends Application{
 		primaryStage.setTitle("Library Book Scanner Launcher");
 		primaryStage.setResizable(false);
 		primaryStage.show();
+		stage = primaryStage;
 
 	}
 	
@@ -60,6 +69,7 @@ public class LauncherGUI extends Application{
 		if(System.getProperty("os.name").startsWith("Win")){
 			try{
 				Files.createDirectories(Paths.get("resources"));
+				Files.createDirectories(Paths.get("data"));
 				File splashFile = new File("resources" + File.separator + "splash.png");
 				File zoznamFile = new File("resources" + File.separator + "zoznam.xls");
 				File booksFile = new File("resources" + File.separator + "books.xls");
@@ -95,6 +105,7 @@ public class LauncherGUI extends Application{
 			new Thread(() -> {
 				try{
 					Files.createDirectories(Paths.get("resources"));
+					Files.createDirectories(Paths.get("data"));
 					File splashFile = new File("resources" + File.separator + "splash.png");
 					File zoznamFile = new File("resources" + File.separator + "zoznam.xls");
 					File booksFile = new File("resources" + File.separator + "books.xls");
