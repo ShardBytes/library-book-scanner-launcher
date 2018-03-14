@@ -25,8 +25,8 @@ public class LauncherGUI extends Application{
 	public Stage stage;
 	public LauncherGUIController controllerInstance;
 	
-	public static String LBSDatabaseLocation1;
-	public static String LBSDatabaseLocation2;
+	public static String LBSDatabaseLocation1 = "data" + File.separator + "lbsdatabase.xml";
+	public static String LBSDatabaseLocation2 = "data" + File.separator + "borrowings.xml";
 	
 	public static double x;
 	public static double y;

@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.NoSuchElementException;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
@@ -213,8 +214,9 @@ public class LauncherGUIController implements Initializable{
 			fw.write(obj.toString());
 			fw.flush();
 		} catch (IOException e1) {
-			TermUtils.printerr("Cannot save config file!");
+			TermUtils.printerr("Cannot save config file");
 		}
+		TermUtils.println("Config file saved");
 
 	}
 
@@ -232,8 +234,9 @@ public class LauncherGUIController implements Initializable{
 			db2.setText(LauncherGUI.LBSDatabaseLocation2);
 
 		}catch(IOException e1){
-			TermUtils.printerr("Cannot read config file!");
+			TermUtils.printerr("Cannot read config file");
 		}
+		TermUtils.println("Config file loaded");
 
 	}
 
@@ -328,9 +331,9 @@ public class LauncherGUIController implements Initializable{
 				versions.add(versionObj.toString().substring(22, versionObj.toString().length() - 1));
 			}
 			Comparator<String> customComparator = AutoUpdate::versionComparator;
-
-			AutoUpdate.CURRENT_VERSION = Collections.max(versions, customComparator);
-		}catch(IndexOutOfBoundsException e){
+			
+			AutoUpdate.CURRENT_VERSION = Collections.max(versions, customComparator);				
+		}catch(IndexOutOfBoundsException | NoSuchElementException e){
 			AutoUpdate.CURRENT_VERSION = "Aktualiz\u00E1cia potrebn\u00E1";
 		}
 
