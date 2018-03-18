@@ -21,9 +21,6 @@ import java.util.NoSuchElementException;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
-import javax.swing.JDialog;
-import javax.swing.JOptionPane;
-
 import org.json.JSONObject;
 
 import com.jfoenix.controls.JFXButton;
@@ -115,7 +112,14 @@ public class LauncherGUIController implements Initializable{
 			}
 
 		}else{
-			new Thread(() -> JOptionPane.showMessageDialog(null, "Chyba pri sp\u00FA\u0161\u0165an\u00ED LBS. Skontrolujte pripojenie k internetu a spustite launcher znova.", "Chyba", JOptionPane.ERROR_MESSAGE)).start();
+			new Thread(() -> {
+				Platform.runLater(() -> {
+					Alert alert = new Alert(AlertType.ERROR, "Chyba pri sp\u00FA\u0161\u0165an\u00ED LBS. Skontrolujte pripojenie k internetu a spustite launcher znova.", ButtonType.OK);
+					alert.setHeaderText("Chyba");
+					alert.setTitle("Library Book Scanner Launcher [" + LauncherGUI.VERSION + "]");
+					alert.show();
+				});
+			}).start();
 		}
 
 	}
@@ -123,7 +127,14 @@ public class LauncherGUIController implements Initializable{
 	@FXML
 	private void doUpdate(ActionEvent e) throws IOException{
 		if(isLBSRunning){
-			new Thread(() -> JOptionPane.showMessageDialog(null, "Ukon\u010Dite LBS a sk\u00FAste znova.", "Chyba", JOptionPane.ERROR_MESSAGE)).start();
+			new Thread(() -> {
+				Platform.runLater(() -> {
+					Alert alert = new Alert(AlertType.ERROR, "Ukon\u010Dite LBS a sk\u00FAste znova.", ButtonType.OK);
+					alert.setHeaderText("Chyba");
+					alert.setTitle("Library Book Scanner Launcher [" + LauncherGUI.VERSION + "]");
+					alert.show();
+				});
+			}).start();
 		}else{
 			final Stage dialog = new Stage(StageStyle.TRANSPARENT);
 			final Stage mainWindow = app.stage;
@@ -261,7 +272,7 @@ public class LauncherGUIController implements Initializable{
 			while(1 < 2){
 				if(AutoUpdate.updateAvailable()){
 					Platform.runLater(() -> {
-						Alert alert = new Alert(AlertType.NONE, "Je dostupn\u00E1 nov\u0161ia verzia LBS.", ButtonType.OK);
+						Alert alert = new Alert(AlertType.INFORMATION, "Je dostupn\u00E1 nov\u0161ia verzia LBS.", ButtonType.OK);
 						alert.setHeaderText("Aktualiz\u00E1cia");
 						alert.setTitle("Library Book Scanner Launcher [" + LauncherGUI.VERSION + "]");
 						alert.show();
