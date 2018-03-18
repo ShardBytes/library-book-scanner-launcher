@@ -21,6 +21,7 @@ import java.util.NoSuchElementException;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
+import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
 import org.json.JSONObject;
@@ -43,6 +44,9 @@ import javafx.geometry.Side;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.chart.PieChart;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.TextFieldListCell;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.effect.GaussianBlur;
@@ -256,7 +260,12 @@ public class LauncherGUIController implements Initializable{
 		Runnable runnableUpdate = () -> {
 			while(1 < 2){
 				if(AutoUpdate.updateAvailable()){
-					JOptionPane.showMessageDialog(null, "Je dostupn\u00E1 nov\u0161ia verzia LBS.", "Aktualiz\u00E1cia", JOptionPane.INFORMATION_MESSAGE);
+					Platform.runLater(() -> {
+						Alert alert = new Alert(AlertType.NONE, "Je dostupn\u00E1 nov\u0161ia verzia LBS.", ButtonType.OK);
+						alert.setHeaderText("Aktualiz\u00E1cia");
+						alert.setTitle("Library Book Scanner Launcher [" + LauncherGUI.VERSION + "]");
+						alert.show();
+					});
 				}
 				try{
 					Thread.sleep(1800000);

@@ -28,6 +28,8 @@ public class LauncherGUI extends Application{
 	public static String LBSDatabaseLocation1 = "data" + File.separator + "lbsdatabase.xml";
 	public static String LBSDatabaseLocation2 = "data" + File.separator + "borrowings.xml";
 	
+	public static final String VERSION = "v1.0.2";
+	
 	public static double x;
 	public static double y;
 	public static double width;
@@ -44,7 +46,7 @@ public class LauncherGUI extends Application{
 		
 		primaryStage.setScene(scene);
 		primaryStage.sizeToScene();
-		primaryStage.setTitle("Library Book Scanner Launcher");
+		primaryStage.setTitle("Library Book Scanner Launcher [" + VERSION + "]");
 		primaryStage.setResizable(false);
 		primaryStage.show();
 		stage = primaryStage;
