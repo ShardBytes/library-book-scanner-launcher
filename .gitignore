@@ -3,3 +3,7 @@
 *.xml
 *.DS_Store
 launcherConfig.json
+
+/out/
+.idea/
+*.iml
