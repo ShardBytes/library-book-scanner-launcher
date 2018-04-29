@@ -16,33 +16,26 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import sun.misc.Launcher;
 
 public class LauncherGUI extends Application{
 	
-	public FXMLLoader loader;
-	public Parent root;
-	public Scene scene;
-	public Stage stage;
-	public LauncherGUIController controllerInstance;
+	Parent root;
+	Stage stage;
 	
-	public static String LBSDatabaseLocation1 = "data" + File.separator + "lbsdatabase.xml";
-	public static String LBSDatabaseLocation2 = "data" + File.separator + "borrowings.xml";
+	static String LBSDatabaseLocation1 = "data" + File.separator + "lbsdatabase.xml";
+	static String LBSDatabaseLocation2 = "data" + File.separator + "borrowings.xml";
 	
-	public static final String VERSION = "v1.0.2";
-	
-	public static double x;
-	public static double y;
-	public static double width;
-	public static double height;
+	static final String VERSION = "v1.0.2";
 
 	@Override
 	public void start(Stage primaryStage) throws Exception{
-		loader = new FXMLLoader(getClass().getResource("MainWindow.fxml"));
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("MainWindow.fxml"));
 		root = loader.load();
-		controllerInstance = loader.getController();
+		LauncherGUIController controllerInstance = loader.getController();
 		controllerInstance.link(this);
 		
-		scene = new Scene(root);		
+		Scene scene = new Scene(root);		
 		
 		primaryStage.setScene(scene);
 		primaryStage.sizeToScene();
