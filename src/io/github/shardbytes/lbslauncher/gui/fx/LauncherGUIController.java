@@ -70,6 +70,7 @@ public class LauncherGUIController implements Initializable{
 	private LauncherGUI app;
 
 	public static boolean isLBSRunning = false;
+	public static boolean update = false;
 	public static Process p;
 	private volatile boolean completed = false;
 
@@ -267,17 +268,32 @@ public class LauncherGUIController implements Initializable{
 
 		addFilesToList();
 		refreshCurrentVersion();
+		
+		try{
+			update = AutoUpdate.updateAvailable();
+		}catch(Exception e){
+			TermUtils.printerr("Cannot connect to Github.com! Exiting now");
+			Platform.runLater(() -> {
+				Alert a = new Alert(Alert.AlertType.ERROR, "Ned\u00E1 sa pripoji\u0165 na Github.com!", ButtonType.CLOSE);
+				a.setTitle("Library Book Scanner Launcher [" + LauncherGUI.VERSION + "]");
+				a.setHeaderText("Chyba");
+				a.show();
+			});
+			
+		}
 
 		Runnable runnableUpdate = () -> {
 			while(1 < 2){
-				if(AutoUpdate.updateAvailable()){
+				if(update){
 					Platform.runLater(() -> {
 						Alert alert = new Alert(AlertType.INFORMATION, "Je dostupn\u00E1 nov\u0161ia verzia LBS.", ButtonType.OK);
 						alert.setHeaderText("Aktualiz\u00E1cia");
 						alert.setTitle("Library Book Scanner Launcher [" + LauncherGUI.VERSION + "]");
 						alert.show();
 					});
+					
 				}
+				
 				try{
 					Thread.sleep(1800000);
 				}catch(InterruptedException e){
@@ -287,6 +303,7 @@ public class LauncherGUIController implements Initializable{
 			}
 
 		};
+		
 		Thread t = new Thread(runnableUpdate);
 		t.setDaemon(true);
 		t.setName("GitUpdate-Thread");
