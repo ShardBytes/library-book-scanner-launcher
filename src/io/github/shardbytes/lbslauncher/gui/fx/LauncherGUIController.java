@@ -89,7 +89,7 @@ public class LauncherGUIController implements Initializable{
 			    jvm_location = System.getProperties().getProperty("java.home") + File.separator + "bin" + File.separator + "java";
 			}
 
-			ProcessBuilder pb = new ProcessBuilder(jvm_location, "-splash:resources" + File.separator + "splash.png", "-jar", "resources" + File.separator + prefList.getItems().get((selection == -1 ? 0 : selection)) + ".jar", LauncherGUI.LBSDatabaseLocation1, LauncherGUI.LBSDatabaseLocation2);
+			ProcessBuilder pb = new ProcessBuilder(jvm_location, "-splash:resources" + File.separator + "splash.png", "-jar", "resources" + File.separator + prefList.getItems().get((selection == -1 ? 0 : selection)) + ".jar", LauncherGUI.LBSDatabaseLocation);
 			pb.redirectOutput(Redirect.INHERIT);
 			pb.redirectError(Redirect.PIPE);
 
@@ -113,29 +113,25 @@ public class LauncherGUIController implements Initializable{
 			}
 
 		}else{
-			new Thread(() -> {
-				Platform.runLater(() -> {
-					Alert alert = new Alert(AlertType.ERROR, "Chyba pri sp\u00FA\u0161\u0165an\u00ED LBS. Skontrolujte pripojenie k internetu a spustite launcher znova.", ButtonType.OK);
-					alert.setHeaderText("Chyba");
-					alert.setTitle("Library Book Scanner Launcher [" + LauncherGUI.VERSION + "]");
-					alert.show();
-				});
-			}).start();
+			new Thread(() -> Platform.runLater(() -> {
+				Alert alert = new Alert(AlertType.ERROR, "Chyba pri sp\u00FA\u0161\u0165an\u00ED LBS. Skontrolujte pripojenie k internetu a spustite launcher znova.", ButtonType.OK);
+				alert.setHeaderText("Chyba");
+				alert.setTitle("Library Book Scanner Launcher [" + LauncherGUI.VERSION + "]");
+				alert.show();
+			})).start();
 		}
 
 	}
 
 	@FXML
-	private void doUpdate(ActionEvent e) throws IOException{
+	private void doUpdate() throws IOException{
 		if(isLBSRunning){
-			new Thread(() -> {
-				Platform.runLater(() -> {
-					Alert alert = new Alert(AlertType.ERROR, "Ukon\u010Dite LBS a sk\u00FAste znova.", ButtonType.OK);
-					alert.setHeaderText("Chyba");
-					alert.setTitle("Library Book Scanner Launcher [" + LauncherGUI.VERSION + "]");
-					alert.show();
-				});
-			}).start();
+			new Thread(() -> Platform.runLater(() -> {
+				Alert alert = new Alert(AlertType.ERROR, "Ukon\u010Dite LBS a sk\u00FAste znova.", ButtonType.OK);
+				alert.setHeaderText("Chyba");
+				alert.setTitle("Library Book Scanner Launcher [" + LauncherGUI.VERSION + "]");
+				alert.show();
+			})).start();
 		}else{
 			final Stage dialog = new Stage(StageStyle.TRANSPARENT);
 			final Stage mainWindow = app.stage;
@@ -218,15 +214,13 @@ public class LauncherGUIController implements Initializable{
 	}
 
 	@FXML
-	private void saveSettings(ActionEvent e){
-		LauncherGUI.LBSDatabaseLocation1 = db1.getText();
-		LauncherGUI.LBSDatabaseLocation2 = db2.getText();
+	private void saveSettings(){
+		LauncherGUI.LBSDatabaseLocation = db1.getText();
 		
 		JSONObject obj = new JSONObject();
-		obj.put("db1", LauncherGUI.LBSDatabaseLocation1);
-		obj.put("db2", LauncherGUI.LBSDatabaseLocation2);
+		obj.put("db1", LauncherGUI.LBSDatabaseLocation);
 
-		try(FileWriter fw = new FileWriter(new File("launcherConfig.json"))){
+		try(FileWriter fw = new FileWriter(new File("data" + File.separator + "launcherConfig.json"))){
 			fw.write(obj.toString());
 			fw.flush();
 		} catch (IOException e1) {
@@ -237,17 +231,15 @@ public class LauncherGUIController implements Initializable{
 	}
 
 	private void loadSettings(){
-		String data = "";
+		String data;
 		try(FileInputStream fis = new FileInputStream(new File("launcherConfig.json"))){
 			try(BufferedReader buffer = new BufferedReader(new InputStreamReader(fis))){
 				data = buffer.lines().collect(Collectors.joining(System.lineSeparator()));
 			}
 			JSONObject obj = new JSONObject(data);
-			LauncherGUI.LBSDatabaseLocation1 = obj.get("db1").toString();
-			LauncherGUI.LBSDatabaseLocation2 = obj.get("db2").toString();
+			LauncherGUI.LBSDatabaseLocation = obj.get("db1").toString();
 			
-			db1.setText(LauncherGUI.LBSDatabaseLocation1);
-			db2.setText(LauncherGUI.LBSDatabaseLocation2);
+			db1.setText(LauncherGUI.LBSDatabaseLocation);
 
 		}catch(IOException e1){
 			TermUtils.printerr("Cannot read config file");

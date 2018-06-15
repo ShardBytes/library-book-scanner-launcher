@@ -1,34 +1,28 @@
 package io.github.shardbytes.lbslauncher.gui.fx;
 
+import io.github.shardbytes.lbslauncher.gui.terminal.TermUtils;
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.net.UnknownHostException;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-
-import io.github.shardbytes.lbslauncher.gui.terminal.TermUtils;
-import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.stage.Stage;
 
 public class LauncherGUI extends Application{
 	
 	Parent root;
 	Stage stage;
 	
-	static String LBSDatabaseLocation1 = "data" + File.separator + "lbsdatabase.xml";
-	static String LBSDatabaseLocation2 = "data" + File.separator + "borrowings.xml";
+	static String LBSDatabaseLocation = "data" + File.separator + "lbsdatabase.dat";
 	
-	static final String VERSION = "v1.0.2";
+	static final String VERSION = "v1.0.3";
 
 	@Override
 	public void start(Stage primaryStage) throws Exception{
@@ -93,7 +87,9 @@ public class LauncherGUI extends Application{
 			
 			
 		}catch(FileAlreadyExistsException ignored){
-		}catch(Exception ignored){
+		}catch(Exception e){
+			TermUtils.printerr("Something happened");
+			TermUtils.printerr(e.getMessage());
 		}finally{
 			TermUtils.println("Resources ready, launching");
 			LauncherGUI.launch(args);
