@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.chart.*?>
-<?import javafx.scene.text.*?>
-<?import javafx.scene.control.*?>
-<?import com.jfoenix.controls.*?>
-<?import java.lang.*?>
-<?import javafx.scene.layout.*?>
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXListView?>
+<?import com.jfoenix.controls.JFXTabPane?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.scene.control.Tab?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="338.0" prefWidth="512.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.github.shardbytes.lbslauncher.gui.fx.LauncherGUIController">
+<AnchorPane prefHeight="338.0" prefWidth="512.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.github.shardbytes.lbslauncher.gui.fx.LauncherGUIController">
    <children>
       <JFXTabPane prefHeight="338.0" prefWidth="512.0" style="-fx-background-color: #6f7075;">
          <tabs>
@@ -18,16 +18,6 @@
                      <children>
                         <JFXListView fx:id="prefList" layoutX="25.0" layoutY="14.0" prefHeight="243.0" prefWidth="464.0" style="-fx-background-color: #898a8e;" />
                         <JFXButton fx:id="runPref" defaultButton="true" layoutX="225.0" layoutY="267.0" onAction="#launchLBS" style="-fx-background-color: #898a8e;" text="Spustiť" />
-                     </children>
-                  </AnchorPane>
-              </content>
-            </Tab>
-            <Tab text="Informácie">
-              <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                     <children>
-                        <PieChart fx:id="pie1" layoutX="48.0" layoutY="54.0" prefHeight="200.0" prefWidth="200.0" />
-                        <PieChart fx:id="pie2" layoutX="265.0" layoutY="54.0" prefHeight="200.0" prefWidth="200.0" />
                      </children>
                   </AnchorPane>
               </content>
@@ -44,7 +34,6 @@
                         <JFXTextField fx:id="db1" labelFloat="true" layoutX="179.0" layoutY="73.0" promptText="lbsdatabase.xml" />
                         <Text layoutX="14.0" layoutY="91.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Cesta k databáze:" textAlignment="RIGHT" wrappingWidth="150.0" />
                         <JFXButton fx:id="saveButton" layoutX="122.0" layoutY="267.0" onAction="#saveSettings" style="-fx-background-color: #898a8e;" text="Uložiť údaje" />
-                        <JFXTextField fx:id="db2" labelFloat="true" layoutX="179.0" layoutY="127.0" promptText="borrowings.xml" />
                      </children>
                   </AnchorPane>
               </content>

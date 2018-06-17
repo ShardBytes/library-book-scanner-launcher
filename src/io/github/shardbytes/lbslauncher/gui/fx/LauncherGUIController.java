@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 
 import org.json.JSONObject;
 
-import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXTextField;
 
@@ -31,16 +30,11 @@ import io.github.shardbytes.lbslauncher.gui.terminal.TermUtils;
 import io.github.shardbytes.lbslauncher.update.AutoUpdate;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.Side;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.chart.PieChart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Alert.AlertType;
@@ -53,29 +47,23 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 public class LauncherGUIController implements Initializable{
-
-	@FXML private JFXButton runPref;
-	@FXML private JFXButton updateButton;
+	
 	@FXML private Text installedVersionText;
 	@FXML private Text lastVersionText;
-	@FXML private JFXButton saveButton;
 	@FXML private JFXTextField db1;
-	@FXML private JFXTextField db2;
-	@FXML private PieChart pie1;
-	@FXML private PieChart pie2;
 
 	@SuppressWarnings("rawtypes")
 	@FXML private JFXListView prefList;
 
 	private LauncherGUI app;
 
-	public static boolean isLBSRunning = false;
-	public static boolean update = false;
-	public static Process p;
+	private static boolean isLBSRunning = false;
+	private static boolean update = false;
+	static Process p;
 	private volatile boolean completed = false;
 
 	@FXML
-	private void launchLBS(ActionEvent e){
+	private void launchLBS(){
 		int selection = prefList.getSelectionModel().getSelectedIndex();
 		String jvm_location;
 
@@ -119,6 +107,7 @@ public class LauncherGUIController implements Initializable{
 				alert.setTitle("Library Book Scanner Launcher [" + LauncherGUI.VERSION + "]");
 				alert.show();
 			})).start();
+			
 		}
 
 	}
@@ -215,18 +204,33 @@ public class LauncherGUIController implements Initializable{
 
 	@FXML
 	private void saveSettings(){
-		LauncherGUI.LBSDatabaseLocation = db1.getText();
-		
-		JSONObject obj = new JSONObject();
-		obj.put("db1", LauncherGUI.LBSDatabaseLocation);
-
-		try(FileWriter fw = new FileWriter(new File("data" + File.separator + "launcherConfig.json"))){
-			fw.write(obj.toString());
-			fw.flush();
-		} catch (IOException e1) {
-			TermUtils.printerr("Cannot save config file");
+		if(!db1.getText().isEmpty()){
+			LauncherGUI.LBSDatabaseLocation = db1.getText();
+			
+			JSONObject obj = new JSONObject();
+			obj.put("db1", LauncherGUI.LBSDatabaseLocation);
+			
+			try(FileWriter fw = new FileWriter(new File("data" + File.separator + "launcherConfig.json"))){
+				fw.write(obj.toString());
+				fw.flush();
+			} catch (IOException e1) {
+				TermUtils.printerr("Cannot save config file");
+			}
+			TermUtils.println("Config file saved");
+			
+		}else{
+			JSONObject obj = new JSONObject();
+			obj.put("db1", "data" + File.separator + "lbsdatabase.dat");
+			
+			try(FileWriter fw = new FileWriter(new File("data" + File.separator + "launcherConfig.json"))){
+				fw.write(obj.toString());
+				fw.flush();
+			} catch (IOException e1) {
+				TermUtils.printerr("Cannot save config file");
+			}
+			TermUtils.println("Config file reset to default");
+			
 		}
-		TermUtils.println("Config file saved");
 
 	}
 
@@ -248,7 +252,7 @@ public class LauncherGUIController implements Initializable{
 
 	}
 
-	public void link(LauncherGUI l){
+	void link(LauncherGUI l){
 		app = l;
 	}
 
@@ -304,32 +308,16 @@ public class LauncherGUIController implements Initializable{
 		setCurrentVersionText();
 		loadSettings();
 
-		ObservableList<PieChart.Data> pieData = FXCollections.observableArrayList(new PieChart.Data("Vypozicane", 35), new PieChart.Data("Dostupne", 10));
-		ObservableList<PieChart.Data> pieData2 = FXCollections.observableArrayList(new PieChart.Data("Poezia", 400), new PieChart.Data("Beletria", 1000), new PieChart.Data("Naucna literatura", 750));
-
-		pie1.setStartAngle(90);
-		pie1.setTitle("Graf 1");
-		pie1.setTitleSide(Side.TOP);
-		pie1.setLegendVisible(true);
-		pie1.setLabelsVisible(true);
-		pie1.setLegendSide(Side.RIGHT);
-		pie1.setData(pieData);
-
-		pie2.setStartAngle(90);
-		pie2.setTitle("Graf 2");
-		pie2.setTitleSide(Side.TOP);
-		pie2.setLegendVisible(true);
-		pie2.setLabelsVisible(true);
-		pie2.setLegendSide(Side.RIGHT);
-		pie2.setData(pieData2);
-
 	}
 
 	@SuppressWarnings("unchecked")
 	private void addFilesToList(){
 		File[] versions = new File("resources" + File.separator).listFiles();
+		if(versions == null){
+			throw new NullPointerException("File array versions is null");
+		}
 		Arrays.sort(versions);
-
+		
 		int versionsHalfLength = versions.length >> 1;
 
 		for(int i = 0; i < versionsHalfLength; i++){
@@ -339,15 +327,13 @@ public class LauncherGUIController implements Initializable{
 		}
 
 		for(File f : versions){
-			if(f.isDirectory()){
-				continue;
-			}else{
+			if(!f.isDirectory()){
 				if(f.toString().startsWith("resources" + File.separator + "Library Book Scanner [v") && f.toString().endsWith("].jar")){
 					prefList.getItems().add(f.toString().substring(10, f.toString().length() - 4));
 				}
 
 			}
-
+			
 		}
 
 	}
