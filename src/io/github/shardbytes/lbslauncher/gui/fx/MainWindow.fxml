@@ -31,7 +31,7 @@
                         <Text layoutX="14.0" layoutY="52.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Nainštalovaná verzia:" textAlignment="RIGHT" wrappingWidth="150.0" />
                         <Text fx:id="lastVersionText" layoutX="179.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="lastVersionText" wrappingWidth="252.60205078125" />
                         <Text fx:id="installedVersionText" layoutX="179.0" layoutY="53.0" strokeType="OUTSIDE" strokeWidth="0.0" text="installedVersionText" wrappingWidth="287.07421875" />
-                        <JFXTextField fx:id="db1" labelFloat="true" layoutX="179.0" layoutY="73.0" promptText="lbsdatabase.xml" />
+                        <JFXTextField fx:id="db1" labelFloat="true" layoutX="179.0" layoutY="73.0" promptText="lbsdatabase.dat" />
                         <Text layoutX="14.0" layoutY="91.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Cesta k databáze:" textAlignment="RIGHT" wrappingWidth="150.0" />
                         <JFXButton fx:id="saveButton" layoutX="122.0" layoutY="267.0" onAction="#saveSettings" style="-fx-background-color: #898a8e;" text="Uložiť údaje" />
                      </children>
