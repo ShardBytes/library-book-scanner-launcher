@@ -219,6 +219,7 @@ public class LauncherGUIController implements Initializable{
 			TermUtils.println("Config file saved");
 			
 		}else{
+			LauncherGUI.LBSDatabaseLocation = "data" + File.separator + "lbsdatabase.dat";
 			JSONObject obj = new JSONObject();
 			obj.put("db1", "data" + File.separator + "lbsdatabase.dat");
 			
