@@ -22,7 +22,7 @@ public class LauncherGUI extends Application{
 	
 	static String LBSDatabaseLocation = "data" + File.separator + "lbsdatabase.dat";
 	
-	static final String VERSION = "v1.0.3";
+	public static final String VERSION = "v1.0.3";
 
 	@Override
 	public void start(Stage primaryStage) throws Exception{
@@ -56,7 +56,13 @@ public class LauncherGUI extends Application{
 	}
 	
 	public static void main(String[] args){
+		/*
+		 * Init coloured printer
+		 */
 		TermUtils.init();
+		if(System.console() == null){
+			System.setProperty("jansi.passthrough", "true");
+		}
 		
 		try{
 			Files.createDirectories(Paths.get("resources"));

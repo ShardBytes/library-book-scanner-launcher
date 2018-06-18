@@ -11,6 +11,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
+import io.github.shardbytes.lbslauncher.gui.fx.LauncherGUI;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -45,10 +48,17 @@ public final class AutoUpdate{
 			reader.close();
 
 		}catch(IOException e){
-			e.printStackTrace();
+			TermUtils.printerr(e.getMessage());
 			TermUtils.printerr("Cannot download newest Github data.");
-			TermUtils.printerr("API limit probably exceeded, try again 1 hour later.");
-			Platform.exit();
+			TermUtils.printerr("Check your internet connection or try again 1 hour later.");
+			Platform.runLater(() -> {
+				Alert alert = new Alert(Alert.AlertType.ERROR, "", ButtonType.OK);
+				alert.setHeaderText("Chyba");
+				alert.setTitle("Library Book Scanner Launcher [" + LauncherGUI.VERSION + "]");
+				alert.showAndWait();
+				Platform.exit();
+			});
+			
 		}
 		return resultString.toString();
 
