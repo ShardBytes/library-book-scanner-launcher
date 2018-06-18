@@ -51,13 +51,12 @@ public final class AutoUpdate{
 			TermUtils.printerr(e.getMessage());
 			TermUtils.printerr("Cannot download newest Github data.");
 			TermUtils.printerr("Check your internet connection or try again 1 hour later.");
-			Platform.runLater(() -> {
-				Alert alert = new Alert(Alert.AlertType.ERROR, "", ButtonType.OK);
-				alert.setHeaderText("Chyba");
-				alert.setTitle("Library Book Scanner Launcher [" + LauncherGUI.VERSION + "]");
-				alert.showAndWait();
-				Platform.exit();
-			});
+			
+			Alert alert = new Alert(Alert.AlertType.ERROR, "Ned\u00E1 sa pripoji\u0165 ku github.com. Skontrolujte svoje internetov\u00E9 pripojenie a sk\u00FAste znova.", ButtonType.OK);
+			alert.setHeaderText("Chyba");
+			alert.setTitle("Library Book Scanner Launcher [" + LauncherGUI.VERSION + "]");
+			alert.showAndWait();
+			Platform.exit();
 			
 		}
 		return resultString.toString();
