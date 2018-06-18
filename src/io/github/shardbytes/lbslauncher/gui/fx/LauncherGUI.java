@@ -1,9 +1,7 @@
 package io.github.shardbytes.lbslauncher.gui.fx;
 
-import com.sun.xml.internal.xsom.impl.Ref;
 import io.github.shardbytes.lbslauncher.gui.terminal.TermUtils;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -67,7 +65,7 @@ public class LauncherGUI extends Application{
 		LauncherGUI.launch();
 	}
 	
-	public void initLoading(){
+	private void initLoading(){
 		/*
 		 * Init coloured printer
 		 */
@@ -75,6 +73,7 @@ public class LauncherGUI extends Application{
 		if(System.console() == null){
 			System.setProperty("jansi.passthrough", "true");
 		}
+		
 		try{
 			final Stage dialog = new Stage(StageStyle.TRANSPARENT);
 			final FXMLLoader loader = new FXMLLoader(getClass().getResource("UpdatePopup.fxml"));
@@ -88,6 +87,7 @@ public class LauncherGUI extends Application{
 			dialog.setScene(scene);
 			
 			Task<Void> downloadTask = new Task<Void>(){
+				
 				@Override
 				protected Void call(){
 					try{
@@ -111,15 +111,18 @@ public class LauncherGUI extends Application{
 							InputStream books_in = books.openStream();
 							InputStream persons_in = persons.openStream();
 							Files.copy(splash_in, Paths.get("resources" + File.separator + "splash.png"), StandardCopyOption.REPLACE_EXISTING);
-							controller.setProgress(0, 100, 25);
+							moveSmoothly(0.0d, 25.0d, controller);
 							Files.copy(zoznam_in, Paths.get("resources" + File.separator + "zoznam.xls"), StandardCopyOption.REPLACE_EXISTING);
-							controller.setProgress(0, 100, 50);
+							moveSmoothly(25.0d, 50.0d, controller);
 							Files.copy(books_in, Paths.get("resources" + File.separator + "books.xls"), StandardCopyOption.REPLACE_EXISTING);
-							controller.setProgress(0, 100, 75);
+							moveSmoothly(50.0d, 75.0d, controller);
 							Files.copy(persons_in, Paths.get("resources" + File.separator + "persons.xls"), StandardCopyOption.REPLACE_EXISTING);
-							controller.setProgress(0, 100, 100);
+							moveSmoothly(75.0d, 100.0d, controller);
 							
+						}else{
+							moveSmoothly(0.0d, 100.0d, controller);
 						}
+						
 						
 					}catch(FileAlreadyExistsException ignored){
 					}catch(Exception e){
@@ -135,16 +138,24 @@ public class LauncherGUI extends Application{
 				
 			};
 			
-			downloadTask.setOnRunning((event) -> dialog.show());
 			downloadTask.setOnSucceeded((event -> dialog.close()));
-			downloadTask.setOnFailed((event -> Platform.exit()));
+			downloadTask.setOnFailed((event -> dialog.close()));
 			
 			new Thread(downloadTask).start();
+			dialog.showAndWait();
 			
 		}catch(IOException e){
 			TermUtils.printerr(e.getMessage());
 		}
 
+	}
+	
+	private void moveSmoothly(double moveFromPercent, double moveToPercent, UpdatePopupController controller) throws InterruptedException{
+		for(double currentPercent = moveFromPercent; currentPercent <= moveToPercent; currentPercent += (moveToPercent - moveFromPercent) / 60.0){
+			Thread.sleep(Math.round(1000 / 60.0));
+			controller.setProgress(0, 100, currentPercent);
+		}
+		
 	}
 
 }
