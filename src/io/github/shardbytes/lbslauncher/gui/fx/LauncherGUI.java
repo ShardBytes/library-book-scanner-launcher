@@ -26,7 +26,7 @@ public class LauncherGUI extends Application{
 	
 	static String LBSDatabaseLocation = "data" + File.separator + "lbsdatabase.dat";
 	
-	public static final String VERSION = "v1.0.3";
+	public static final String VERSION = "v1.1.0";
 
 	@Override
 	public void start(Stage primaryStage) throws Exception{
