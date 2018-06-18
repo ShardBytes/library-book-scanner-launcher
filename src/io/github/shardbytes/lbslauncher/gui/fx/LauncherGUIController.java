@@ -21,11 +21,8 @@ import java.util.NoSuchElementException;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
-import javax.swing.JOptionPane;
-
 import org.json.JSONObject;
 
-import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXTextField;
 
@@ -33,16 +30,14 @@ import io.github.shardbytes.lbslauncher.gui.terminal.TermUtils;
 import io.github.shardbytes.lbslauncher.update.AutoUpdate;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.Side;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.chart.PieChart;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.TextFieldListCell;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.effect.GaussianBlur;
@@ -52,28 +47,23 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 public class LauncherGUIController implements Initializable{
-
-	@FXML private JFXButton runPref;
-	@FXML private JFXButton updateButton;
+	
 	@FXML private Text installedVersionText;
 	@FXML private Text lastVersionText;
-	@FXML private JFXButton saveButton;
 	@FXML private JFXTextField db1;
-	@FXML private JFXTextField db2;
-	@FXML private PieChart pie1;
-	@FXML private PieChart pie2;
 
 	@SuppressWarnings("rawtypes")
 	@FXML private JFXListView prefList;
 
 	private LauncherGUI app;
 
-	public static boolean isLBSRunning = false;
-	public static Process p;
+	private static boolean isLBSRunning = false;
+	private static boolean update = false;
+	static Process p;
 	private volatile boolean completed = false;
 
 	@FXML
-	private void launchLBS(ActionEvent e){
+	private void launchLBS(){
 		int selection = prefList.getSelectionModel().getSelectedIndex();
 		String jvm_location;
 
@@ -87,7 +77,7 @@ public class LauncherGUIController implements Initializable{
 			    jvm_location = System.getProperties().getProperty("java.home") + File.separator + "bin" + File.separator + "java";
 			}
 
-			ProcessBuilder pb = new ProcessBuilder(jvm_location, "-splash:resources" + File.separator + "splash.png", "-jar", "resources" + File.separator + prefList.getItems().get((selection == -1 ? 0 : selection)) + ".jar", LauncherGUI.LBSDatabaseLocation1, LauncherGUI.LBSDatabaseLocation2);
+			ProcessBuilder pb = new ProcessBuilder(jvm_location, "-splash:resources" + File.separator + "splash.png", "-jar", "resources" + File.separator + prefList.getItems().get((selection == -1 ? 0 : selection)) + ".jar", LauncherGUI.LBSDatabaseLocation);
 			pb.redirectOutput(Redirect.INHERIT);
 			pb.redirectError(Redirect.PIPE);
 
@@ -111,15 +101,26 @@ public class LauncherGUIController implements Initializable{
 			}
 
 		}else{
-			new Thread(() -> JOptionPane.showMessageDialog(null, "Chyba pri sp\u00FA\u0161\u0165an\u00ED LBS. Skontrolujte pripojenie k internetu a spustite launcher znova.", "Chyba", JOptionPane.ERROR_MESSAGE)).start();
+			new Thread(() -> Platform.runLater(() -> {
+				Alert alert = new Alert(AlertType.ERROR, "Chyba pri sp\u00FA\u0161\u0165an\u00ED LBS. Skontrolujte pripojenie k internetu a spustite launcher znova.", ButtonType.OK);
+				alert.setHeaderText("Chyba");
+				alert.setTitle("Library Book Scanner Launcher [" + LauncherGUI.VERSION + "]");
+				alert.show();
+			})).start();
+			
 		}
 
 	}
 
 	@FXML
-	private void doUpdate(ActionEvent e) throws IOException{
+	private void doUpdate() throws IOException{
 		if(isLBSRunning){
-			new Thread(() -> JOptionPane.showMessageDialog(null, "Ukon\u010Dite LBS a sk\u00FAste znova.", "Chyba", JOptionPane.ERROR_MESSAGE)).start();
+			new Thread(() -> Platform.runLater(() -> {
+				Alert alert = new Alert(AlertType.ERROR, "Ukon\u010Dite LBS a sk\u00FAste znova.", ButtonType.OK);
+				alert.setHeaderText("Chyba");
+				alert.setTitle("Library Book Scanner Launcher [" + LauncherGUI.VERSION + "]");
+				alert.show();
+			})).start();
 		}else{
 			final Stage dialog = new Stage(StageStyle.TRANSPARENT);
 			final Stage mainWindow = app.stage;
@@ -202,36 +203,49 @@ public class LauncherGUIController implements Initializable{
 	}
 
 	@FXML
-	private void saveSettings(ActionEvent e){
-		LauncherGUI.LBSDatabaseLocation1 = db1.getText();
-		LauncherGUI.LBSDatabaseLocation2 = db2.getText();
-		
-		JSONObject obj = new JSONObject();
-		obj.put("db1", LauncherGUI.LBSDatabaseLocation1);
-		obj.put("db2", LauncherGUI.LBSDatabaseLocation2);
-
-		try(FileWriter fw = new FileWriter(new File("launcherConfig.json"))){
-			fw.write(obj.toString());
-			fw.flush();
-		} catch (IOException e1) {
-			TermUtils.printerr("Cannot save config file");
+	private void saveSettings(){
+		if(!db1.getText().isEmpty()){
+			LauncherGUI.LBSDatabaseLocation = db1.getText();
+			
+			JSONObject obj = new JSONObject();
+			obj.put("db1", LauncherGUI.LBSDatabaseLocation);
+			
+			try(FileWriter fw = new FileWriter(new File("data" + File.separator + "launcherConfig.json"))){
+				fw.write(obj.toString());
+				fw.flush();
+			} catch (IOException e1) {
+				TermUtils.printerr("Cannot save config file");
+			}
+			TermUtils.println("Config file saved");
+			
+		}else{
+			LauncherGUI.LBSDatabaseLocation = "data" + File.separator + "lbsdatabase.dat";
+			
+			JSONObject obj = new JSONObject();
+			obj.put("db1", "data" + File.separator + "lbsdatabase.dat");
+			
+			try(FileWriter fw = new FileWriter(new File("data" + File.separator + "launcherConfig.json"))){
+				fw.write(obj.toString());
+				fw.flush();
+			} catch (IOException e1) {
+				TermUtils.printerr("Cannot save config file");
+			}
+			TermUtils.println("Config file reset to default");
+			
 		}
-		TermUtils.println("Config file saved");
 
 	}
 
 	private void loadSettings(){
-		String data = "";
+		String data;
 		try(FileInputStream fis = new FileInputStream(new File("launcherConfig.json"))){
 			try(BufferedReader buffer = new BufferedReader(new InputStreamReader(fis))){
 				data = buffer.lines().collect(Collectors.joining(System.lineSeparator()));
 			}
 			JSONObject obj = new JSONObject(data);
-			LauncherGUI.LBSDatabaseLocation1 = obj.get("db1").toString();
-			LauncherGUI.LBSDatabaseLocation2 = obj.get("db2").toString();
+			LauncherGUI.LBSDatabaseLocation = obj.get("db1").toString();
 			
-			db1.setText(LauncherGUI.LBSDatabaseLocation1);
-			db2.setText(LauncherGUI.LBSDatabaseLocation2);
+			db1.setText(LauncherGUI.LBSDatabaseLocation);
 
 		}catch(IOException e1){
 			TermUtils.printerr("Cannot read config file");
@@ -240,7 +254,7 @@ public class LauncherGUIController implements Initializable{
 
 	}
 
-	public void link(LauncherGUI l){
+	void link(LauncherGUI l){
 		app = l;
 	}
 
@@ -252,12 +266,32 @@ public class LauncherGUIController implements Initializable{
 
 		addFilesToList();
 		refreshCurrentVersion();
+		
+		try{
+			update = AutoUpdate.updateAvailable();
+		}catch(Exception e){
+			TermUtils.printerr("Cannot connect to Github.com! Exiting now");
+			Platform.runLater(() -> {
+				Alert a = new Alert(Alert.AlertType.ERROR, "Ned\u00E1 sa pripoji\u0165 na Github.com!", ButtonType.CLOSE);
+				a.setTitle("Library Book Scanner Launcher [" + LauncherGUI.VERSION + "]");
+				a.setHeaderText("Chyba");
+				a.show();
+			});
+			
+		}
 
 		Runnable runnableUpdate = () -> {
 			while(1 < 2){
-				if(AutoUpdate.updateAvailable()){
-					JOptionPane.showMessageDialog(null, "Je dostupn\u00E1 nov\u0161ia verzia LBS.", "Aktualiz\u00E1cia", JOptionPane.INFORMATION_MESSAGE);
+				if(update){
+					Platform.runLater(() -> {
+						Alert alert = new Alert(AlertType.INFORMATION, "Je dostupn\u00E1 nov\u0161ia verzia LBS.", ButtonType.OK);
+						alert.setHeaderText("Aktualiz\u00E1cia");
+						alert.setTitle("Library Book Scanner Launcher [" + LauncherGUI.VERSION + "]");
+						alert.show();
+					});
+					
 				}
+				
 				try{
 					Thread.sleep(1800000);
 				}catch(InterruptedException e){
@@ -267,6 +301,7 @@ public class LauncherGUIController implements Initializable{
 			}
 
 		};
+		
 		Thread t = new Thread(runnableUpdate);
 		t.setDaemon(true);
 		t.setName("GitUpdate-Thread");
@@ -275,32 +310,16 @@ public class LauncherGUIController implements Initializable{
 		setCurrentVersionText();
 		loadSettings();
 
-		ObservableList<PieChart.Data> pieData = FXCollections.observableArrayList(new PieChart.Data("Vypozicane", 35), new PieChart.Data("Dostupne", 10));
-		ObservableList<PieChart.Data> pieData2 = FXCollections.observableArrayList(new PieChart.Data("Poezia", 400), new PieChart.Data("Beletria", 1000), new PieChart.Data("Naucna literatura", 750));
-
-		pie1.setStartAngle(90);
-		pie1.setTitle("Graf 1");
-		pie1.setTitleSide(Side.TOP);
-		pie1.setLegendVisible(true);
-		pie1.setLabelsVisible(true);
-		pie1.setLegendSide(Side.RIGHT);
-		pie1.setData(pieData);
-
-		pie2.setStartAngle(90);
-		pie2.setTitle("Graf 2");
-		pie2.setTitleSide(Side.TOP);
-		pie2.setLegendVisible(true);
-		pie2.setLabelsVisible(true);
-		pie2.setLegendSide(Side.RIGHT);
-		pie2.setData(pieData2);
-
 	}
 
 	@SuppressWarnings("unchecked")
 	private void addFilesToList(){
 		File[] versions = new File("resources" + File.separator).listFiles();
+		if(versions == null){
+			throw new NullPointerException("File array versions is null");
+		}
 		Arrays.sort(versions);
-
+		
 		int versionsHalfLength = versions.length >> 1;
 
 		for(int i = 0; i < versionsHalfLength; i++){
@@ -310,15 +329,13 @@ public class LauncherGUIController implements Initializable{
 		}
 
 		for(File f : versions){
-			if(f.isDirectory()){
-				continue;
-			}else{
+			if(!f.isDirectory()){
 				if(f.toString().startsWith("resources" + File.separator + "Library Book Scanner [v") && f.toString().endsWith("].jar")){
 					prefList.getItems().add(f.toString().substring(10, f.toString().length() - 4));
 				}
 
 			}
-
+			
 		}
 
 	}
